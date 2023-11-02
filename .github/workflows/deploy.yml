@@ -1,31 +1,31 @@
-name: EC2 Deployment
-
+name: test
 on:
-  push:
-    branches:
-      - main  # Change this to your main branch
-
+ push: 
+   branches: [stage]
+ pull_request:
+   branches: [stage]
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Setup SSH
-      run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
-        chmod 600 key.pem
-        ssh-keyscan -H 172.31.45.14 >> ~/.ssh/known_hosts
-        ssh -i key.pem ${{ secrets.SSH_USERNAME }}@172.31.45.14 "echo SSH Connection Established"
-
-    - name: Deploy code to EC2
-      run: |
-        # Add your deployment commands here
-        # Example: scp -i key.pem -r path/to/local/code ${{ secrets.SSH_USERNAME }}@your-ec2-instance-ip:/path/to/remote/directory
-        # Example: ssh -i key.pem ${{ secrets.SSH_USERNAME }}@your-ec2-instance-ip "cd /path/to/remote/directory && git pull"
-
-    - name: Clean up
-      run: |
-        rm -f key.pem
+ build:
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v3
+     - name: install ssh keys
+       run: |
+        install -m 600 -D /dev/null ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+     - name: connect and pull
+       run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+          echo ----- change Directory -----
+          cd ${{ secrets.WORK_DIR }}
+          echo ----- git checkout -----
+          git checkout ${{ secrets.STAGE_BRANCH }}
+          echo ----- git pull -----
+          git pull origin ${{ secrets.STAGE_BRANCH }}
+          echo ----- yarn build -----
+          /home/ubuntu/.nvm/versions/node/v18.18.2/bin/yarn build
+          exit
+        EOF    
+     - name: cleanup
+       run: rm -rf ~/.ssh
