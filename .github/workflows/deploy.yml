@@ -19,13 +19,11 @@ jobs:
           sudo apt-get install -y apache2 php mysql-server
           sudo service apache2 start
           sudo service mysql start
-          # Configure Apache and PHP for your WordPress site
 
       - name: Set up WordPress
         run: |
           # Navigate to the web root directory
           cd /var/www/html/github_action_phpcodedeploy
-          
           # Remove the default HTML file
           #sudo rm index.html
 
@@ -46,6 +44,6 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -i /home/addweb/keys ubuntu@52.66.43.136 "cd /var/www/html/ && git pull"
+          ssh -i /home/addweb/keys ubuntu@172.31.45.14 "cd /var/www/html/ && git pull"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
