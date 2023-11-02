@@ -1,4 +1,4 @@
-name: WordPress Deployment to AWS EC2
+name: Node.js Deployment to AWS EC2
 
 on:
   push:
@@ -13,56 +13,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build & Deploy
-        env:
-            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{secrets.SSH_HOST}}
-            USER_NAME: ${{secrets.USER_NAME}}
+      - name: Install Node.js and NPM
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14  # Use the Node.js version you need
 
+      - name: Install Dependencies
         run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-
-              # Now we have got the access of EC2 and we will start the deploy .
-              cd /var/www/html/github_action_phpcodedeploy &&
-              git fetch --all &&
-              git pull origin main &&
-              sudo npm i &&
-              sudo npm run build &&
-              sudo pm2 stop ./dist/index.js &&
-              sudo pm2 start ./dist/index.js
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y apache2 php mysql-server
-          sudo service apache2 start
-          sudo service mysql start
-
-#      - name: Set up WordPress
-#        run: |
-          # Navigate to the web root directory
           cd /var/www/html/github_action_phpcodedeploy
-          # Remove the default HTML file
-          #sudo rm index.html
+          npm install
 
-          # Clone or update your WordPress repository
-          git pull
-
-          # Configure your WordPress site
-         # cp wp-config-sample.php wp-config.php
-         # sed -i 's/database_name_here/your_database_name/' wp-config.php
-         # sed -i 's/username_here/your_database_username/' wp-config.php
-         # sed -i 's/password_here/your_database_password/' wp-config.php
-
-          # Install or update WordPress plugins and themes
-         # wp plugin install <plugin-name> --activate
-         # wp theme update --all
-
-          # You may also need to import your database
+      - name: Build
+        run: |
+          cd /var/www/html/github_action_phpcodedeploy
+          npm run build
 
       - name: Deploy to EC2
         run: |
-          ssh -i /home/addweb/keys ubuntu@172.31.45.14 "cd /var/www/html/ && git pull"
+          ssh -i /home/addweb/keys ubuntu@172.31.45.14 "cd /var/www/html/github_action_phpcodedeploy && git pull && npm install && npm run build"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
