@@ -20,8 +20,8 @@ jobs:
           sudo service apache2 start
           sudo service mysql start
 
-      - name: Set up WordPress
-        run: |
+#      - name: Set up WordPress
+#        run: |
           # Navigate to the web root directory
           cd /var/www/html/github_action_phpcodedeploy
           # Remove the default HTML file
