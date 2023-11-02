@@ -31,15 +31,15 @@ jobs:
           git pull
 
           # Configure your WordPress site
-          cp wp-config-sample.php wp-config.php
-          sed -i 's/database_name_here/your_database_name/' wp-config.php
-          sed -i 's/username_here/your_database_username/' wp-config.php
-          sed -i 's/password_here/your_database_password/' wp-config.php
+         # cp wp-config-sample.php wp-config.php
+         # sed -i 's/database_name_here/your_database_name/' wp-config.php
+         # sed -i 's/username_here/your_database_username/' wp-config.php
+         # sed -i 's/password_here/your_database_password/' wp-config.php
 
           # Install or update WordPress plugins and themes
          # wp plugin install <plugin-name> --activate
          # wp theme update --all
-          
+
           # You may also need to import your database
 
       - name: Deploy to EC2
