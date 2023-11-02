@@ -1,4 +1,4 @@
-name: CI/CD to AWS EC2
+name: WordPress Deployment to AWS EC2
 
 on:
   push:
@@ -14,13 +14,38 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: npm install  # Replace with your package manager and setup
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apache2 php mysql-server
+          sudo service apache2 start
+          sudo service mysql start
+          # Configure Apache and PHP for your WordPress site
 
-      - name: Build
-        run: npm run build  # Replace with your build command
+      - name: Set up WordPress
+        run: |
+          # Navigate to the web root directory
+          cd /var/www/html/github_action_phpcodedeploy
+          
+          # Remove the default HTML file
+          #sudo rm index.html
+
+          # Clone or update your WordPress repository
+          git pull
+
+          # Configure your WordPress site
+          cp wp-config-sample.php wp-config.php
+          sed -i 's/database_name_here/your_database_name/' wp-config.php
+          sed -i 's/username_here/your_database_username/' wp-config.php
+          sed -i 's/password_here/your_database_password/' wp-config.php
+
+          # Install or update WordPress plugins and themes
+         # wp plugin install <plugin-name> --activate
+         # wp theme update --all
+          
+          # You may also need to import your database
 
       - name: Deploy to EC2
         run: |
-          ssh -i /home/addweb/keys ubuntu@52.66.43.136 "cd /var/www/html/ && git pull && npm install && npm run build"
+          ssh -i /home/addweb/keys ubuntu@52.66.43.136 "cd /var/www/html/ && git pull"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
