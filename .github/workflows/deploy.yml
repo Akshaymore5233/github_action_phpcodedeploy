@@ -1,41 +1,31 @@
-name: GitHub Repository Clone to AWS EC2
+name: EC2 Deployment
 
 on:
   push:
     branches:
-      - main
+      - main  # Change this to your main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Install Dependencies
-        run: |
-          cd /var/www/html/github_action_phpcodedeploy
-          npm install
+    - name: Setup SSH
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+        chmod 600 key.pem
+        ssh-keyscan -H 172.31.45.14 >> ~/.ssh/known_hosts
+        ssh -i key.pem ${{ secrets.SSH_USERNAME }}@172.31.45.14 "echo SSH Connection Established"
 
+    - name: Deploy code to EC2
+      run: |
+        # Add your deployment commands here
+        # Example: scp -i key.pem -r path/to/local/code ${{ secrets.SSH_USERNAME }}@your-ec2-instance-ip:/path/to/remote/directory
+        # Example: ssh -i key.pem ${{ secrets.SSH_USERNAME }}@your-ec2-instance-ip "cd /path/to/remote/directory && git pull"
 
-
-      - name: Deploy to EC2
-        run: |
-          # Specify your SSH private key file
-          SSH_PRIVATE_KEY_FILE="/home/addweb/keys/mykey.pem"
-
-          # Replace these with your own values
-          EC2_USER="ubuntu"
-          EC2_INSTANCE_IP="172.31.45.14"
-          REMOTE_DIRECTORY="/var/www/html/github_action_phpcodedeploy"
-          
-          # Set up the SSH private key
-          echo "$SSH_PRIVATE_KEY" > "$SSH_PRIVATE_KEY_FILE"
-          chmod 600 "$SSH_PRIVATE_KEY_FILE"
-          
-          # Clone the GitHub repository on the EC2 instance
-          ssh -i "$SSH_PRIVATE_KEY_FILE" "$EC2_USER@$EC2_INSTANCE_IP" "cd $REMOTE_DIRECTORY && git pull git@github.com:Akshaymore5233/github_action_phpcodedeploy.git"
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
+    - name: Clean up
+      run: |
+        rm -f key.pem
