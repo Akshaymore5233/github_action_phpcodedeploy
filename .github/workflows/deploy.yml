@@ -1,4 +1,4 @@
-name: Node.js Deployment to AWS EC2
+name: WordPress Deployment to AWS EC2
 
 on:
   push:
@@ -13,23 +13,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Node.js and NPM
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14  # Use the Node.js version you need
-
-      - name: Install Dependencies
-        run: |
-          cd /var/www/html/github_action_phpcodedeploy
-          npm install
-
-      - name: Build
-        run: |
-          cd /var/www/html/github_action_phpcodedeploy
-          npm run build
-
       - name: Deploy to EC2
         run: |
-          ssh -i /home/addweb/keys ubuntu@172.31.45.14 "cd /var/www/html/github_action_phpcodedeploy && git pull && npm install && npm run build"
+          ssh -i /home/addweb/keys ubuntu@172.31.45.14 "cd /var/www/html/github_action_phpcodedeploy && git pull"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
