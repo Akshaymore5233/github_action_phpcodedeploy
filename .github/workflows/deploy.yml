@@ -13,6 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install Dependencies
+        run: |
+          cd /var/www/html/github_action_phpcodedeploy
+          npm install
+
+
+
       - name: Deploy to EC2
         run: |
           # Specify your SSH private key file
