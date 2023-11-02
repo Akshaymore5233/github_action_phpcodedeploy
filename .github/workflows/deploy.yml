@@ -1,4 +1,4 @@
-name: WordPress Deployment to AWS EC2
+name: GitHub Repository Clone to AWS EC2
 
 on:
   push:
@@ -15,6 +15,20 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -i /home/addweb/keys ubuntu@172.31.45.14 "cd /var/www/html/github_action_phpcodedeploy && git pull"
+          # Specify your SSH private key file
+          SSH_PRIVATE_KEY_FILE="/home/addweb/keys/mykey.pem"
+
+          # Replace these with your own values
+          EC2_USER="ubuntu"
+          EC2_INSTANCE_IP="172.31.45.14"
+          REMOTE_DIRECTORY="/var/www/html/github_action_phpcodedeploy"
+          
+          # Set up the SSH private key
+          echo "$SSH_PRIVATE_KEY" > "$SSH_PRIVATE_KEY_FILE"
+          chmod 600 "$SSH_PRIVATE_KEY_FILE"
+          
+          # Clone the GitHub repository on the EC2 instance
+          ssh -i "$SSH_PRIVATE_KEY_FILE" "$EC2_USER@$EC2_INSTANCE_IP" "cd $REMOTE_DIRECTORY && git pull git@github.com:Akshaymore5233/github_action_phpcodedeploy.git"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
