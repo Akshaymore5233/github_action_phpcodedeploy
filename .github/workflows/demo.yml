@@ -1,18 +1,9 @@
-name: learn-github-actions
-run-name: learning GitHub Actions
-on: [push]
-jobs:
-  check-bats-version:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '14'
-      - run: npm install -g bats
-      - run: bats -v
-
-
+name: test
+on:
+ push: 
+   branches: [stage]
+ pull_request:
+   branches: [stage]
 jobs:
  build:
    runs-on: ubuntu-latest
@@ -27,14 +18,14 @@ jobs:
        run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
           echo ----- change Directory -----
-          cd ${{ secrets.PROD_WORK_DIR }}
+          cd ${{ secrets.WORK_DIR }}
           echo ----- git checkout -----
-          git checkout ${{ secrets.PROD_BRANCH }}
+          git checkout ${{ secrets.STAGE_BRANCH }}
           echo ----- git pull -----
-          git pull origin ${{ secrets.PROD_BRANCH }}
-          echo ----- yarn build -----
-         # /home/ubuntu/.nvm/versions/node/v18.18.2/bin/yarn build
+          git pull origin ${{ secrets.STAGE_BRANCH }}
+          /usr/bin/pm2 restart all
           exit
-        EOF
+        EOF    
      - name: cleanup
        run: rm -rf ~/.ssh
+
