@@ -11,6 +11,7 @@ jobs:
      - uses: actions/checkout@v3
      - name: install ssh keys
        run: |
+        echo ---- ssh connection ------
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
@@ -23,7 +24,6 @@ jobs:
           git checkout ${{ secrets.STAGE_BRANCH }}
           echo ----- git pull -----
           git pull origin ${{ secrets.STAGE_BRANCH }}
-          /usr/bin/pm2 restart all
           exit
         EOF    
      - name: cleanup
