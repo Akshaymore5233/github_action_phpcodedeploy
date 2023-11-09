@@ -23,10 +23,4 @@ jobs:
         port: 22
         source: repository.tar.gz
         target: /mnt
-    - name: SSH into EC2 and Extract
-      run: |
-        ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 
-        sudo chown -R ubuntu:ubuntu /mnt/
-        cd /mnt
-        sudo chmod 777 repository.tar.gz
-        sudo tar -xzf /tmp/ZgBtrWzyly.tar.gz  
+ 
