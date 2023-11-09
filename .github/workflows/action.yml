@@ -15,7 +15,7 @@ jobs:
         find . -maxdepth 1 -not -name '.' -exec echo {} \; | tar -czf repository.tar.gz -T -pwd
        
     - name: Copy to EC2
-      uses: appleboy/scp-action@master
+      uses: appleboy/scp-action@main
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
