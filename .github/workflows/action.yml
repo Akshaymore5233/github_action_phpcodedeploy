@@ -15,11 +15,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script: |
-            ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p /mnt/my_app"
-            
-            cd /mnt/my_app  # Change to the deployment directory
-            git init  # Initialize a Git repository if not already done
-            git remote add origin git@github.com:Akshaymore5233/github_action_phpcodedeploy.git
-            git pull origin main
-            # Additional deployment steps if needed
+          
