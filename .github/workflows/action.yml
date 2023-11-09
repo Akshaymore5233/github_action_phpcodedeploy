@@ -17,4 +17,4 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p /mnt/my_app"
-            scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} -r * ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/mnt/my_app
+            git pull git@github.com:Akshaymore5233/github_action_phpcodedeploy.git
