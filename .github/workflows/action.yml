@@ -13,8 +13,7 @@ jobs:
     - name: Archive Repository
       run: |
         find . -maxdepth 1 -not -name '.' -exec echo {} \; | tar -czf repository.tar.gz -T -pwd
-        pwd 
-
+       
     - name: Copy to EC2
       uses: appleboy/scp-action@master
       with:
