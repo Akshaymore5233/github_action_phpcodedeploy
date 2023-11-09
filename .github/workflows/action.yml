@@ -1,49 +1,28 @@
-name: PHP Composer
+name: Copy Source Code with SSH
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build:
+  copy-code:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-      - name: Install SSH keys
-        run: |
-          echo ---- ssh connection ------
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-      - name: Connect and pull
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
-            echo ----- Change Directory -----
-            cd ${{ secrets.WORK_DIR }}
-            echo ----- Git Checkout -----
-            git checkout ${{ secrets.STAGE_BRANCH }}
-            echo ----- Git Pull -----
-            git pull origin ${{ secrets.STAGE_BRANCH }}
-            exit
-          EOF
-
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+    - name: Copy Source Code
+      run: |
+        cp -r path/to/source/code destination/folder/
+        git add destination/folder
+        git commit -m "Copy source code using GitHub Actions"
+        git push
