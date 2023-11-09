@@ -22,5 +22,5 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         source: repository.tar.gz
-        target: /mnt
+        target: /manoj
  
