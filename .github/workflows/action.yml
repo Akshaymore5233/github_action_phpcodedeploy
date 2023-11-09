@@ -18,3 +18,5 @@ jobs:
           script: |
             whoami
             ls -al
+            sudo mkdir -p myapp
+            cd myapp 
