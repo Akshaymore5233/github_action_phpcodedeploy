@@ -1,4 +1,4 @@
-name: Copy Source Code with SSH
+name: Copy Repository to EC2
 
 on:
   push:
@@ -6,23 +6,23 @@ on:
       - main
 
 jobs:
-  copy-code:
+  copy-to-ec2:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+    - name: Archive Repository
+      run: tar -czf repository.tar.gz *
 
-    - name: Set up SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
+    - name: Copy to EC2
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: repository.tar.gz
+        target: /mnt
 
-    - name: Copy Source Code
+    - name: SSH into EC2 and Extract
       run: |
-        cp -r path/to/source/code destination/folder/
-        git add destination/folder
-        git commit -m "Copy source code using GitHub Actions"
-        git push
+        ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'cd /mnt && tar -xzf repository.tar.gz'
