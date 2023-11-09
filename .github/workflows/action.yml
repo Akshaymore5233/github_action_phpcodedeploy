@@ -23,6 +23,3 @@ jobs:
             git remote add origin git@github.com:Akshaymore5233/github_action_phpcodedeploy.git
             git pull origin main
             # Additional deployment steps if needed
-      - name: Additional Deployment Steps
-        run: |
-          # Add any additional deployment steps here
