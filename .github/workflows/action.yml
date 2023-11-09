@@ -15,7 +15,12 @@ jobs:
         find . -maxdepth 1 -not -name '.' -exec echo {} \; | tar -czf repository.tar.gz -T -
 
     - name: Write private key to file
-      run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > secret.key
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > secret.key
+        ls -l
+
+    - name: Display contents of secret.key
+      run: cat secret.key
 
     - name: Copy to EC2
       run: |
@@ -23,4 +28,4 @@ jobs:
 
     - name: SSH into EC2 and Extract
       run: |
-        ssh -i secret.key ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'cd /manoj && tar -xzf repository.tar.gz'
+        ssh -i secret.key ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'cd /manoj && ls -l && tar -xzf repository.tar.gz'
