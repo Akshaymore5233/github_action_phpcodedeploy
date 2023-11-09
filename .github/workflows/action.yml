@@ -16,16 +16,12 @@ jobs:
 
     - name: Write private key to file
       run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > secret.key
-        ls -l
-
-    - name: Display contents of secret.key
-      run: cat secret.key
+        echo "111111111"
 
     - name: Copy to EC2
       run: |
-        scp -i secret.key -o StrictHostKeyChecking=no repository.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/manoj/
+        scp -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no repository.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/manoj/
 
     - name: SSH into EC2 and Extract
       run: |
-        ssh -i secret.key ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'cd /manoj && ls -l && tar -xzf repository.tar.gz'
+        ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'cd /manoj && ls -l && tar -xzf repository.tar.gz'
