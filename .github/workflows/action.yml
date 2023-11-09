@@ -19,7 +19,7 @@ jobs:
 
     - name: Copy to EC2
       run: |
-      scp -i /mnt/secret.key -o StrictHostKeyChecking=no repository.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/manoj/
+        scp -i /mnt/secret.key -o StrictHostKeyChecking=no repository.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/manoj/
 
     - name: SSH into EC2 and Extract
       run: |
