@@ -15,7 +15,7 @@ jobs:
         find . -maxdepth 1 -not -name '.' -exec echo {} \; | tar -czf repository.tar.gz -T -
 
     - name: Write private key to file
-      run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > /mnt/secret.key
+      run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > /mnt/secret.key && sudo chmod 600 /mnt/secret.key 
 
     - name: Copy to EC2
       run: |
