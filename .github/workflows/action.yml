@@ -17,10 +17,10 @@ jobs:
           script: |
             whoami
             ls -al
-            cd ~
-            sudo rm -rf myapp/
+            cd ~           
             mkdir -p myapp  # Create the directory if it doesn't exist
             sudo chown -R ubuntu:ubuntu myapp/
             sudo chmod -R 777 myapp/ 
             cd myapp/
-            
+            git pull git@github.com:Akshaymore5233/github_action_phpcodedeploy.git
+            cd github_action_phpcodedeploy/
