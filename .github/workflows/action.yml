@@ -19,6 +19,8 @@ jobs:
           script: |
             whoami
             ls -al
+            cd ~
+            sudo rm -rf myapp/
             mkdir -p myapp  # Create the directory if it doesn't exist
             sudo chown -R ubuntu:ubuntu myapp/
             sudo chmod -R 777 myapp/ 
